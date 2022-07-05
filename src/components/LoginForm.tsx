@@ -14,20 +14,13 @@ type FormValues = {
 };
 
 const LoginForm = () => {
+  renderCount++;
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
-  } = useForm({
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-      age: "",
-    },
-  });
+  } = useForm<FormValues>();
 
-  const firstName = watch("firstName");
   return (
     <form
       onSubmit={handleSubmit((data) => {
@@ -43,8 +36,7 @@ const LoginForm = () => {
         id="firstName"
         {...register("firstName", { required: "This is required" })}
       />
-      <p>{firstName}</p>
-      <p>{errors.firstName?.message}</p>
+      {errors.firstName && <p>This is required</p>}
 
       <label htmlFor="lastName">Last Name:</label>
       <input
@@ -53,23 +45,29 @@ const LoginForm = () => {
           required: "This is required",
           minLength: {
             value: 4,
-            message: "The min length should be 4 characters",
+            message: "The min length should be at least 4 characters",
           },
         })}
       />
-      <p>{errors.lastName?.message}</p>
-      <label htmlFor="age">Age</label>
-      <input type="number" id="age" {...register("age")} />
+      {errors.lastName?.message}
 
-      {/* <label htmlFor="gender"></label>
-      <select id="gender">
+      <label htmlFor="age">Age</label>
+      <input
+        type="number"
+        id="age"
+        {...register("age", { valueAsNumber: true, required: true })}
+      />
+      {errors.age && <p>Enter a numeric value</p>}
+
+      <label htmlFor="gender"></label>
+      <select {...register("gender")} id="gender">
         <option value="">Select...</option>
         <option value="male">male</option>
         <option value="female">female</option>
       </select>
 
       <label htmlFor="developer">Are you a developer?</label>
-      <input value="yes" type="checkbox" /> */}
+      <input {...register("developer")} value="true" type="checkbox" />
 
       <input type="submit" />
     </form>
