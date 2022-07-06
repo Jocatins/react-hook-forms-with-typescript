@@ -1,26 +1,39 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-
-// Schema validation library
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 // styles
 import Headers from "./Header";
 import "../styles.css";
 
 let renderCount = 0;
 
-const schema = z.object({
-  firstName: z.string().nonempty({ message: "This field is required" }),
-  lastName: z.string(),
-  age: z.number().min(10),
-});
+// type formValues = {
+//   firstName: string;
+//   lastName: string;
+//   age: string;
+//   pets: { name: string }[];
+// };
 
 const LoginForm = () => {
-  const { register, handleSubmit } = useForm({
-    resolver: zodResolver(schema),
-    shouldUseNativeValidation: true,
+  const {
+    register,
+    handleSubmit,
+
+    formState: { errors, isValid },
+  } = useForm({
+    mode: "onChange",
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      age: "",
+      pets: [],
+      // nested data
+      // yourDetails: {
+      //   nickname: " ",
+      // },
+    },
   });
+
+  console.log(errors);
   renderCount++;
   return (
     <form
@@ -33,17 +46,34 @@ const LoginForm = () => {
         description="Performant, flexible and extensible forms with easy-to-use validation."
       />
       <label htmlFor="firstName">First Name:</label>
-      <input {...register("firstName")} id="firstName" />
-
+      <input
+        {...register("firstName", { required: "Enter your name" })}
+        id="firstName"
+      />
+      <p>{errors?.firstName?.message}</p>
       <label htmlFor="lastName">Last Name:</label>
-      <input id="lastName" {...register("lastName")} />
-
+      <input
+        id="lastName"
+        {...register("lastName", { required: "Enter your last name" })}
+      />
+      <p>{errors?.lastName?.message}</p>
+      {/* <label htmlFor="NickName">Nick Name:</label>
+      <input
+        id="nickName"
+        {...register("yourDetails.nickname", {
+          required: "Enter your Nick Name",
+        })}
+      />
+      <p>{errors?.yourDetails?.nickname?.message}</p> */}
       <label htmlFor="age">Age</label>
       <input
         max="60"
         type="number"
         id="age"
-        {...register("age", { valueAsNumber: true })}
+        {...register("age", {
+          valueAsNumber: true,
+          required: "Enter your age",
+        })}
       />
 
       {/* <label htmlFor="gender"></label>
@@ -56,7 +86,7 @@ const LoginForm = () => {
       <label htmlFor="developer">Are you a developer?</label>
       <input value="true" type="checkbox" /> */}
 
-      <input type="submit" />
+      <input type="submit" disabled={!isValid} />
     </form>
   );
 };
