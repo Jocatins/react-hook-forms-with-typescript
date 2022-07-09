@@ -17,34 +17,78 @@ const LoginForm = () => {
   const {
     register,
     handleSubmit,
-
-    formState: { errors, isValid },
+    watch,
+    formState,
+    reset,
+    trigger,
+    setError,
+    formState: { errors, isValid, isDirty, isSubmitted, isSubmitSuccessful },
   } = useForm({
     mode: "onChange",
     defaultValues: {
       firstName: "",
       lastName: "",
-      age: "",
-      pets: [],
+      age: 0,
+
       // nested data
       // yourDetails: {
       //   nickname: " ",
       // },
     },
+    criteriaMode: "all",
   });
-
-  console.log(errors);
   renderCount++;
+
+  // console.log(errors);
+  // console.log("isDirty", isDirty);
+  // console.log("is Submitted", isSubmitted);
+  // console.log("isSubmitSuccessful", isSubmitSuccessful);
+  // watch in an array
+  // console.log(watch(["firstName", "lastName"]));
+
+  // const firstName = watch("firstName");
+
+  // watch for useEffect
+  // React.useEffect(() => {
+  //   const subscription = watch((data) => {
+  //     console.log(data);
+  //   });
+  //   return () => {
+  //     subscription.unsubscribe();
+  //   };
+  // }, [watch]);
+
+  // useEffect formState
+  // React.useEffect(() => {
+  //   console.log("useEffect form state", formState.isDirty);
+  // }, [formState]);
+
+  // useEffect for reset
+  // React.useEffect(() => {
+  //   if (formState.isSubmitted) {
+  //     reset({
+  //       firstName: "jocatins",
+  //       lastName: "titan",
+  //       age: 30,
+  //     });
+  //   }
+  // }, [formState, reset]);
+
   return (
     <form
       onSubmit={handleSubmit((data) => {
-        console.log(data);
+        console.log("Data on the form", data);
       })}
     >
       <Headers
         renderCount={renderCount}
         description="Performant, flexible and extensible forms with easy-to-use validation."
       />
+      {/* <p>
+        {firstName === "titan"
+          ? "this is the real titan"
+          : "this is the fake titan"}
+      </p> */}
       <label htmlFor="firstName">First Name:</label>
       <input
         {...register("firstName", { required: "Enter your name" })}
@@ -67,7 +111,6 @@ const LoginForm = () => {
       <p>{errors?.yourDetails?.nickname?.message}</p> */}
       <label htmlFor="age">Age</label>
       <input
-        max="60"
         type="number"
         id="age"
         {...register("age", {
@@ -85,6 +128,46 @@ const LoginForm = () => {
 
       <label htmlFor="developer">Are you a developer?</label>
       <input value="true" type="checkbox" /> */}
+
+      {/* Reset API */}
+
+      {/* <button
+        type="submit"
+        onClick={() => {
+          reset({
+            firstName: "titan",
+            lastName: "'Fidel",
+            age: 34,
+          });
+        }}
+      >
+        Reset
+      </button> */}
+
+      {/* trigger API */}
+      {/* <button
+        type="button"
+        onClick={async () => {
+          const output = await trigger("firstName", { shouldFocus: true });
+          console.log("output", output);
+        }}
+      >
+        trigger
+      </button> */}
+      {/* SetError API */}
+      <button
+        type="button"
+        onClick={() =>
+          setError("firstName", {
+            types: { testMsg: "test message ", testMsg1: "test message 1" },
+          })
+        }
+      >
+        setError
+      </button>
+
+      <p>{errors.firstName?.types?.testMsg}</p>
+      <p>{errors.firstName?.types?.test1Msg1}</p>
 
       <input type="submit" disabled={!isValid} />
     </form>
